@@ -10,5 +10,9 @@ type User struct {
     birthdate   time.Time
 }
 
-type Users []User
+//type Users []User
+type Users map[string]User
 
+func UserKey(u User) string {
+    return "keyisakey"
+}

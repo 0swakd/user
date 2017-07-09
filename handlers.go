@@ -2,11 +2,11 @@ package main
 
 import (
     "encoding/json"
-    "fmt"
+//    "fmt"
     "io"
     "io/ioutil"
     "net/http"
-    "strconv"
+//    "strconv"
 
     "github.com/gorilla/mux"
 )
@@ -14,13 +14,16 @@ import (
 
 func UserShow(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
-    var userId int
-    var err error
-    if userId, err = strconv.Atoi(vars["userId"]); err != nil {
-        panic(err)
-    }
-    user := StorageFindUser(userId)
-    if user.Id > 0 {
+    var userId string
+    //var userId int
+    //var err error
+    userId = vars["userId"]
+    //if userId, err = strconv.Atoi(vars["userId"]); err != nil {
+    //    panic(err)
+    //}
+    //user := StorageFindUser(userId)
+    user, e := StorageFindUser(userId)
+    if e {
         w.Header().Set("Content-Type", "application/json; charset=UTF-8")
         w.WriteHeader(http.StatusOK)
         if err := json.NewEncoder(w).Encode(user); err != nil {
@@ -59,7 +62,7 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
         }
     }
 
-    t := StorageCreateUser(user)
+    t, _ := StorageCreateUser(user)
     w.Header().Set("Content-Type", "application/json; charset=UTF-8")
     w.WriteHeader(http.StatusCreated)
     if err := json.NewEncoder(w).Encode(t); err != nil {
