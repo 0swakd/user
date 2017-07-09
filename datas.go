@@ -1,6 +1,6 @@
-package user
+package main
 
-import "fmt"
+//import "fmt"
 
 var users Users
 
