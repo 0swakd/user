@@ -22,11 +22,23 @@ type StorageUser struct {
     Salt        string      `json:"key"` /* Here comes the ugly part, we are so doomed */
 }
 
-type StorageSearchResult struct {
-    Name        []string      `json:"name"`
-    Surname     []string      `json:"surname"`
-    Email       []string      `json:"email"`
+// TODO : split response between exact match and partial match
+type StorageSearchMatch struct {
+    Partial     []string
+    Exact       []string
 }
+
+type StorageSearchResult struct {
+    Name        StorageSearchMatch      `json:"name"`
+    Surname     StorageSearchMatch      `json:"surname"`
+    Email       StorageSearchMatch      `json:"email"`
+}
+
+//type StorageSearchResult struct {
+//    Name        []string      `json:"name"`
+//    Surname     []string      `json:"surname"`
+//    Email       []string      `json:"email"`
+//}
 
 // TODO retirer fmt et les faire gerer par le heandler ou autre
 
@@ -250,23 +262,39 @@ func StorageUpdateUser(u User, key string) (StorageUser, error) {
 }
 
 /* TODO : Can be splitted in index RPAs and managed by Entry RPAs */
+// TODO : split response between exact match and partial match
 func StorageSearchUser(u User) (StorageSearchResult, error) {
     var result StorageSearchResult
 
     for key, user := range users {
         //if u.Name != "" && user.Name == u.Name {
         if len(u.Name) > 4 && strings.Contains(strings.ToUpper(user.Name), strings.ToUpper(u.Name)) {
-            result.Name = append(result.Name, key)
+            if user.Name == u.Name {
+                result.Name.Exact = append(result.Name.Exact, key)
+            } else {
+                result.Name.Partial = append(result.Name.Partial, key)
+            }
+            //result.Name = append(result.Name, key)
         }
         //if u.Surname != "" && user.Surname == u.Surname {
         if len(u.Surname) > 4 && strings.Contains(strings.ToUpper(user.Surname), strings.ToUpper(u.Surname)) {
-            result.Surname = append(result.Surname, key)
+            if user.Surname == u.Surname {
+                result.Surname.Exact = append(result.Surname.Exact, key)
+            } else {
+                result.Surname.Partial = append(result.Surname.Partial, key)
+            }
+            //result.Surname = append(result.Surname, key)
         }
         // TODO : Email lookup should/could be an exact match search
         // TODO : Entry RPAs should anonymise them when searched
-        if len(u.Email) > 4 && strings.Contains(strings.ToUpper(user.Email), strings.ToUpper(u.Email)) {
         //if u.Email != "" && user.Email == u.Email {
-            result.Email = append(result.Email, key)
+        if len(u.Email) > 4 && strings.Contains(strings.ToUpper(user.Email), strings.ToUpper(u.Email)) {
+            if user.Email == u.Email {
+                result.Email.Exact = append(result.Email.Exact, key)
+            } else {
+                result.Email.Partial = append(result.Email.Partial, key)
+            }
+            //result.Email = append(result.Email, key)
         }
     }
 
