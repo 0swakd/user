@@ -10,6 +10,7 @@ import (
     "strings"
 )
 
+// TODO : We should save the key in user so that it could be not structure dependant
 type StorageUser struct {
     Id          int         `json:"-"`
     Name        string      `json:"name"`

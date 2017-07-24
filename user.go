@@ -1,5 +1,6 @@
 package main
 // TODO : Can become a standalone package
+// TODO : Can be splitted into Entity / Specialized packages (description config files)
 
 import (
     "time"
@@ -12,14 +13,14 @@ import (
 
 /* Voir pour faire des structures de sortie un peu moins gores... */
 type User struct {
-    Id          int         `json:"-"`
+    Id          int         `json:"id"`
     Name        string      `json:"name"`
     Surname     string      `json:"surname"`
     Email       string      `json:"email"`
-    Password    string      `json:"password"` /* TODO meeeeeeh noooooo don't do that, do a func updatePassword or anything else but not that */
+    Password    string      `json:"password"`
     Birthdate   time.Time   `json:"birthdate"`
     Activity    time.Time   `json:"activity"`
-    Salt        string      `json:"-"`
+    Salt        string      `json:"salt"`
 }
 
 func UserKey(u User) (string, error) {
@@ -31,6 +32,7 @@ func UserKey(u User) (string, error) {
     return hex.EncodeToString(h.Sum(nil)), nil
 }
 
+// TODO add local salt in serv/storage/whatever config
 func UserSalt(u User, localSalt string) string {
     h := md5.New()
     s := fmt.Sprintf("Salt;user;%s;%d", localSalt, u.Id)
