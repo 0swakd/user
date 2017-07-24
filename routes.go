@@ -13,7 +13,7 @@ type Routes []Route
 
 /* TODO : Get rid of action in url */
 /* TODO : Put a version in the url */
-/* TODO : Possibilite de venir ajouter des routes a la liste depuis un package externe (monitoring, managing) */
+/* TODO : Possibilite de venir ajouter des routes a la liste depuis un package externe (rpa-monitoring, rpa-managing) */
 var routes = Routes{
     Route{
         "UserCreate",
